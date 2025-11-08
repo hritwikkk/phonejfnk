@@ -25,7 +25,7 @@
       const output = document.getElementById('output');
 
       if (!number) {
-        output.textContent = JSON.stringify({ error: "Missing ?nu= parameter" }, null, 2);
+        output.textContent = JSON.stringify({ error: "Missing ?nu= parameter", "API By": "@dev_hritwik" }, null, 2);
         return;
       }
 
@@ -39,15 +39,21 @@
           try {
             data.push(JSON.parse(line));
           } catch (err) {
-            // Skip invalid JSON line silently
+            // Skip invalid JSON line
           }
         }
 
         const record = data.find(item => item.mobile === number);
-        output.textContent = JSON.stringify(record || { error: "Number not found" }, null, 2);
+
+        if (record) {
+          record["API By"] = "@dev_hritwik";
+          output.textContent = JSON.stringify(record, null, 2);
+        } else {
+          output.textContent = JSON.stringify({ error: "Number not found", "API By": "@dev_hritwik" }, null, 2);
+        }
 
       } catch (err) {
-        output.textContent = JSON.stringify({ error: "Failed to load data", details: err.message }, null, 2);
+        output.textContent = JSON.stringify({ error: "Failed to load data", details: err.message, "API By": "@dev_hritwik" }, null, 2);
       }
     })();
   </script>
