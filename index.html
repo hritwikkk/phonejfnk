@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Number Info</title>
+  <style>
+    body {
+      background: #000;
+      color: #0f0;
+      font-family: monospace;
+      margin: 20px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <pre id="output"></pre>
+
+  <script>
+    (async () => {
+      const params = new URLSearchParams(window.location.search);
+      const number = params.get('nu');
+      const output = document.getElementById('output');
+
+      try {
+        const res = await fetch('beast.json');
+        const data = await res.json();
+
+        if (!number) {
+          output.textContent = JSON.stringify({ error: "Missing ?nu= parameter" }, null, 2);
+          return;
+        }
+
+        const record = data.find(item => item.mobile === number);
+        output.textContent = JSON.stringify(record || { error: "Number not found" }, null, 2);
+      } catch (e) {
+        output.textContent = JSON.stringify({ error: "Failed to load data", details: e.message }, null, 2);
+      }
+    })();
+  </script>
+</body>
+</html>
