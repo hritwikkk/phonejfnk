@@ -25,8 +25,9 @@
       const output = document.getElementById('output');
 
       try {
-        const res = await fetch('beast.json');
-        const data = await res.json();
+        const text = await (await fetch('beast.json')).text();
+        const lines = text.trim().split(/\r?\n/);
+        const data = lines.map(line => JSON.parse(line));
 
         if (!number) {
           output.textContent = JSON.stringify({ error: "Missing ?nu= parameter" }, null, 2);
