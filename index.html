@@ -24,20 +24,30 @@
       const number = params.get('nu');
       const output = document.getElementById('output');
 
+      if (!number) {
+        output.textContent = JSON.stringify({ error: "Missing ?nu= parameter" }, null, 2);
+        return;
+      }
+
       try {
         const text = await (await fetch('beast.json')).text();
         const lines = text.trim().split(/\r?\n/);
-        const data = lines.map(line => JSON.parse(line));
+        const data = [];
 
-        if (!number) {
-          output.textContent = JSON.stringify({ error: "Missing ?nu= parameter" }, null, 2);
-          return;
+        // Parse only valid JSON lines
+        for (const line of lines) {
+          try {
+            data.push(JSON.parse(line));
+          } catch (err) {
+            // Skip invalid JSON line silently
+          }
         }
 
         const record = data.find(item => item.mobile === number);
         output.textContent = JSON.stringify(record || { error: "Number not found" }, null, 2);
-      } catch (e) {
-        output.textContent = JSON.stringify({ error: "Failed to load data", details: e.message }, null, 2);
+
+      } catch (err) {
+        output.textContent = JSON.stringify({ error: "Failed to load data", details: err.message }, null, 2);
       }
     })();
   </script>
